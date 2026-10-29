@@ -3,8 +3,8 @@ class Settings{
 		this.init(...args)
 	}
 	init(){
-		var ios = /iPhone|iPad/.test(navigator.userAgent)
-		var phone = /Android|iPhone|iPad/.test(navigator.userAgent)
+		var ios = false
+		var phone = false
 		this.allLanguages = []
 		for(var i in allStrings){
 			this.allLanguages.push(i)
@@ -19,7 +19,7 @@ class Settings{
 			resolution: {
 				type: "select",
 				options: ["high", "medium", "low", "lowest"],
-				default: phone ? "medium" : "high"
+				default: "high"
 			},
 			touchAnimation: {
 				type: "toggle",
