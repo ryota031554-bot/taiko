@@ -3,8 +3,8 @@ class Settings{
 		this.init(...args)
 	}
 	init(){
-		var ios = false
-		var phone = false
+		var ios = false        // 💡ここを false にした！
+		var phone = false      // 💡ここを false にした！
 		this.allLanguages = []
 		for(var i in allStrings){
 			this.allLanguages.push(i)
@@ -21,9 +21,10 @@ class Settings{
 				options: ["high", "medium", "low", "lowest"],
 				default: "high"
 			},
+
 			touchAnimation: {
 				type: "toggle",
-				default: !ios,
+				default: false
 				touch: true
 			},
 			keyboardSettings: {
