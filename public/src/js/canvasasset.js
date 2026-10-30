@@ -11,6 +11,13 @@ class CanvasAsset{
 		this.animationStart = 0
 		this.layer = layer
 		this.beatInterval = 468.75
+		this.dancerFrame = 0;
+		this.dancerTimer = 0;
+		this.runnerFrame = 0;
+		this.runnerTimer = 0;
+		this.runnerPosX = 1280;
+		this.currentRunnerId = Math.floor(Math.random() * 15);
+		this.currentDancerId = Math.floor(Math.random() * 19);
 	}
 	draw(){
 		if(this.animation){
