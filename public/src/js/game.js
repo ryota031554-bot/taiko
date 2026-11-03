@@ -38,11 +38,38 @@ class Game{
 		this.resetSection()
 		this.gameLagSync = !this.controller.touchEnabled && !(/Firefox/.test(navigator.userAgent))
 		
-		assets.songs.forEach(song => {
-			if(song.id == selectedSong.folder){
-				this.mainAsset = song.sound
-			}
-		})
+				// ===================================================
+		// 【裏技】TJAコマンド(random)で背景も含めて全てシャッフルするコアプログラム
+		// ===================================================
+		this.loader = new AssetLoader();
+
+		// TJAに書かれた文字を取得する（書いてない場合は1をデフォルトにする）
+		var tjaDancer = (this.songData && this.songData.attributes && this.songData.attributes.dancer) || "1";
+		var tjaRunner = (this.songData && this.songData.attributes && this.songData.attributes.runner) || "1";
+		var tjaMob    = (this.songData && this.songData.attributes && this.songData.attributes.mob)    || "1";
+		var tjaBg     = (this.songData && this.songData.attributes && this.songData.attributes.bg)     || "1";
+
+		// あなたがアップロードしたそれぞれの最大画像枚数
+		var maxDancer = 10; // ダンサーの総数
+		var maxRunner = 15; // ランナーの総数
+		var maxMob    = 5;  // モブの総数
+		var maxBg     = 8;  // 背景の総数
+
+		// 「random」と書かれていたら、それぞれの枚数に応じてサイコロを振る
+		if (tjaDancer === "random") tjaDancer = Math.floor(Math.random() * maxDancer) + 1;
+		if (tjaRunner === "random") tjaRunner = Math.floor(Math.random() * maxRunner) + 1;
+		if (tjaMob    === "random") tjaMob    = Math.floor(Math.random() * maxMob) + 1;
+		if (tjaBg     === "random") tjaBg     = Math.floor(Math.random() * maxBg) + 1;
+
+		// 決定した数字の画像をGitHubの公開フォルダ（public/img/）から一斉に読み込む
+		this.loader.load("public/img/dancer" + tjaDancer + ".png", "dancer");
+		this.loader.load("public/img/runner" + tjaRunner + ".png", "runner");
+		this.loader.load("public/img/mob"    + tjaMob    + ".png", "mob");
+
+		// 背景（通常用とゴーゴー用をそれぞれ連動した数字の画像から読み込む）
+		this.loader.load("public/img/bg_normal" + tjaBg + ".png", "bg_stage_normal");
+		this.loader.load("public/img/bg_gogo"   + tjaBg + ".png", "bg_stage_gogo");
+
 	}
 	run(){
 		this.timeForDistanceCircle = 2500
