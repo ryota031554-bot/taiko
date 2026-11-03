@@ -2257,3 +2257,55 @@
 		delete this.ctx
 	}
 }
+
+// ==================================================================
+// 【最終完全合体版】画像を一切切らずに1種類をランダム描画する裏技スクリプト（モブ対応）
+// ==================================================================
+(function() {
+    // TJAに指定された「ダンサー」「ランナー」「モブ」の設定文字を取得
+    var tjaDancerType = (window.game && window.game.songData && window.game.songData.attributes && window.game.songData.attributes.dancer) || "1";
+    var tjaRunnerType = (window.game && window.game.songData && window.game.songData.attributes && window.game.songData.attributes.runner) || "1";
+    var tjaMobType    = (window.game && window.game.songData && window.game.songData.attributes && window.game.songData.attributes.mob)    || "1";
+
+    // 🎲 TJAがrandomなら、ここで自動的に「1種類」をサイコロで決定する
+    if (tjaDancerType === "random") {
+        tjaDancerType = Math.random() < 0.5 ? "1" : "2"; // カメなど2パターン
+    }
+    if (tjaRunnerType === "random") {
+        tjaRunnerType = String(Math.floor(Math.random() * 15) + 1); // ひよこなど15種類
+    }
+    if (tjaMobType === "random") {
+        tjaMobType = String(Math.floor(Math.random() * 5) + 1); // モブなど5種類（画像に合わせて枚数を変えてください）
+    }
+
+    // 💡 1マス（1キャラクター）あたりの正確な縦のピクセルサイズを設定
+    var dancerHeight = 72; // カメの1マスの高さ
+    var runnerHeight = 72; // ひよこの1マスの高さ
+    var mobHeight    = 72; // モブの1マスの高さ（画像の間隔に合わせて調整してください）
+
+    // 決定したキャラクターの段数に合わせて、切り取る縦の開始位置（Y座標）を自動計算
+    var finalDancerSy = (tjaDancerType === "2") ? 360 : 0;
+    var finalRunnerSy = (parseInt(tjaRunnerType) - 1) * runnerHeight;
+    var finalMobSy    = (parseInt(tjaMobType) - 1) * mobHeight;
+
+    // キャンバスの描画処理（drawImage）を横取りして、常に計算した1種類の段に固定する魔法
+    const originalDrawImage = CanvasRenderingContext2D.prototype.drawImage;
+    CanvasRenderingContext2D.prototype.drawImage = function(img, sx, sy, sw, sh, dx, dy, dw, dh) {
+        if (img && img.src) {
+            // ダンサー画像の描画を検知したら固定
+            if (img.src.includes('dancer')) {
+                sy = finalDancerSy;
+            }
+            // ランナー画像の描画を検知したら固定
+            else if (img.src.includes('runner')) {
+                sy = finalRunnerSy;
+            }
+            // モブ画像の描画を検知したら固定
+            else if (img.src.includes('mob')) {
+                sy = finalMobSy;
+            }
+        }
+        // 元の描画処理を実行
+        return originalDrawImage.apply(this, arguments);
+    };
+})();
